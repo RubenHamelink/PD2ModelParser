@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace PD2ModelParser
 {
@@ -836,7 +835,7 @@ namespace PD2ModelParser
       }
       catch (Exception ex)
       {
-        int num = (int) MessageBox.Show(ex.ToString());
+        //int num = (int) MessageBox.Show(ex.ToString());
         return false;
       }
       return true;
@@ -1373,7 +1372,7 @@ namespace PD2ModelParser
       }
       catch (Exception ex)
       {
-        int num = (int) MessageBox.Show(ex.ToString());
+        //int num = (int) MessageBox.Show(ex.ToString());
         return false;
       }
       return true;
@@ -1496,7 +1495,7 @@ namespace PD2ModelParser
       }
       catch (Exception ex)
       {
-        int num = (int) MessageBox.Show(ex.ToString());
+        //int num = (int) MessageBox.Show(ex.ToString());
         return false;
       }
       return true;
@@ -1592,7 +1591,7 @@ namespace PD2ModelParser
       }
       catch (Exception ex)
       {
-        int num = (int) MessageBox.Show(ex.ToString());
+        //int num = (int) MessageBox.Show(ex.ToString());
         return false;
       }
       return true;

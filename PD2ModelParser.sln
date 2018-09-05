@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PD2ModelParser", "PD2ModelParser.csproj", "{2FBE46D4-C095-434E-84E2-90CBB12246E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PD2ModelParser", "PD2ModelParser/PD2ModelParser.csproj", "{2FBE46D4-C095-434E-84E2-90CBB12246E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

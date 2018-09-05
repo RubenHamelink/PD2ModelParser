@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PD2ModelParser": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\dev\\workspace\\modding\\Payday 2\\air_hangar.model\""
+    }
+  }
+}
