@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PD2ModelParser.FileManager
-// Assembly: PD2ModelParser, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: FE191739-AC38-4AA2-84FC-C99C6D61FA50
-// Assembly location: C:\Users\ruben\Downloads\12597_Diesel Model Tool v1.03_1.03\PD2ModelParser.exe
-
-using Nexus;
+﻿using Nexus;
 using PD2ModelParser.Sections;
 using System;
 using System.Collections.Generic;
@@ -14,6 +8,7 @@ using System.Linq;
 
 namespace PD2ModelParser
 {
+    [Obsolete("Please use IModelParser instead")]
   public class FileManager
   {
     public static uint animation_data_tag = 1572868536;
@@ -75,7 +70,7 @@ namespace PD2ModelParser
           {
             object obj1 = new object();
             fileStream.Position = section.offset + 12L;
-            object obj2;
+            object obj2 = null;
             if ((int) section.type == (int) FileManager.animation_data_tag)
             {
               Console.WriteLine("Animation Tag at " + (object) section.offset + " Size: " + (object) section.size);
@@ -91,7 +86,7 @@ namespace PD2ModelParser
             else if ((int) section.type == (int) FileManager.material_group_tag)
             {
               Console.WriteLine("Material Group Tag at " + (object) section.offset + " Size: " + (object) section.size);
-              obj2 = (object) new Material_Group(binaryReader, section);
+              obj2 = (object) new MaterialGroup(binaryReader, section);
               Console.WriteLine(obj2);
             }
             else if ((int) section.type == (int) FileManager.material_tag)
@@ -1191,7 +1186,7 @@ namespace PD2ModelParser
           foreach (obj_data newobject in objDataList2)
           {
             Material material = new Material((uint) (newobject.object_name + ".material").GetHashCode(), newobject.material_name);
-            Material_Group materialGroup = new Material_Group((uint) (newobject.object_name + ".materialGroup").GetHashCode(), material.id);
+            MaterialGroup materialGroup = new MaterialGroup((uint) (newobject.object_name + ".materialGroup").GetHashCode(), material.id);
             Geometry geometry = new Geometry((uint) (newobject.object_name + ".geom").GetHashCode(), newobject);
             Topology topology = new Topology((uint) (newobject.object_name + ".topo").GetHashCode(), newobject);
             PassthroughGP passthroughGp = new PassthroughGP((uint) (newobject.object_name + ".passGP").GetHashCode(), geometry.id, topology.id);
@@ -1505,7 +1500,7 @@ namespace PD2ModelParser
     {
       List<Animation> animationList = new List<Animation>();
       List<Author> authorList = new List<Author>();
-      List<Material_Group> materialGroupList = new List<Material_Group>();
+      List<MaterialGroup> materialGroupList = new List<MaterialGroup>();
       List<Object3D> object3DList = new List<Object3D>();
       List<Model> modelList = new List<Model>();
       foreach (SectionHeader section in this.sections)
@@ -1517,8 +1512,8 @@ namespace PD2ModelParser
             animationList.Add(parsedSection as Animation);
           else if (parsedSection is Author)
             authorList.Add(parsedSection as Author);
-          else if (parsedSection is Material_Group)
-            materialGroupList.Add(parsedSection as Material_Group);
+          else if (parsedSection is MaterialGroup)
+            materialGroupList.Add(parsedSection as MaterialGroup);
           else if (parsedSection is Object3D)
             object3DList.Add(parsedSection as Object3D);
           else if (parsedSection is Model)
@@ -1539,7 +1534,7 @@ namespace PD2ModelParser
               animation.StreamWrite(outstream);
             foreach (Author author in authorList)
               author.StreamWrite(outstream);
-            foreach (Material_Group materialGroup in materialGroupList)
+            foreach (MaterialGroup materialGroup in materialGroupList)
             {
               materialGroup.StreamWrite(outstream);
               foreach (uint index in materialGroup.items)
@@ -1559,7 +1554,7 @@ namespace PD2ModelParser
                 object parsedSection = this.parsed_sections[section.id];
                 if (parsedSection is Unknown)
                   (parsedSection as Unknown).StreamWrite(outstream);
-                else if (!(parsedSection is Animation) && !(parsedSection is Author) && (!(parsedSection is Material_Group) && !(parsedSection is Material)) && (!(parsedSection is Object3D) && !(parsedSection is Model)))
+                else if (!(parsedSection is Animation) && !(parsedSection is Author) && (!(parsedSection is MaterialGroup) && !(parsedSection is Material)) && (!(parsedSection is Object3D) && !(parsedSection is Model)))
                 {
                   if (parsedSection is Geometry)
                     (parsedSection as Geometry).StreamWrite(outstream);

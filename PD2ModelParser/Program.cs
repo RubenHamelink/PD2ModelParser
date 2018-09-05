@@ -7,6 +7,9 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using Ninject;
+using PD2ModelParser.Abstract;
+using PD2ModelParser.Concrete;
 
 namespace PD2ModelParser
 {
@@ -21,16 +24,29 @@ namespace PD2ModelParser
                 return;
             }
 
+            IKernel kernel = new StandardKernel();
+            kernel.Bind<IFileSystem>().To<FileSystem>();
+            kernel.Bind<IModelParser>().To<ModelParser>();
+            kernel.Bind<IModelToObjParser>().To<ModelToObjParser>();
+            kernel.Bind<ISectionHeaderParser>().To<SectionHeaderParser>();
+            kernel.Bind<ISectionParser>().To<SectionParser>();
+            kernel.Bind<IObjParser>().To<ObjParser>();
+
             string input = args[0];
             string output = input.Replace(".model", ".obj");
             if (args.Length > 1 && !string.IsNullOrEmpty(args[1]))
                 output = args[1];
 
+            IModelParser modelParser = kernel.Get<IModelParser>();
             FileManager fileManager = new FileManager();
             Stopwatch stopwatch = Stopwatch.StartNew();
-            fileManager.Open(input, output: output);
+            modelParser.WriteToOutput(input, output);
+            long newMs = stopwatch.ElapsedMilliseconds;
+            stopwatch.Restart();
+            fileManager.Open(input, output:output);
             stopwatch.Stop();
-            Console.WriteLine($"Converting model took {stopwatch.ElapsedMilliseconds}ms");
+            Console.WriteLine($"Converting model the old way took {stopwatch.ElapsedMilliseconds}ms");
+            Console.WriteLine($"Converting model the new way took {newMs}ms");
             Console.Read();
         }
     }

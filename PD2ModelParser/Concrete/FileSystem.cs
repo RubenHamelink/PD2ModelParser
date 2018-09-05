@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using PD2ModelParser.Abstract;
 
-namespace PD2ModelParser
+namespace PD2ModelParser.Concrete
 {
-    public class FileSystem
+    public class FileSystem : IFileSystem
     {
         public void WriteAllBytes(string path, byte[] bytes)
         {

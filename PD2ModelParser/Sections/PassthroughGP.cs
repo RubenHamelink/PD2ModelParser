@@ -8,57 +8,70 @@ using System.IO;
 
 namespace PD2ModelParser.Sections
 {
-  internal class PassthroughGP
-  {
-    private static uint passthroughGP_tag = 3819155914;
-    public uint id;
-    public uint size;
-    public uint geometry_section;
-    public uint topology_section;
-    public byte[] remaining_data;
-
-    public PassthroughGP(uint sec_id, uint geom_id, uint face_id)
+    internal class PassthroughGP : Section
     {
-      this.id = sec_id;
-      this.size = 8U;
-      this.geometry_section = geom_id;
-      this.topology_section = face_id;
-    }
+        private static readonly uint passthroughGP_tag = 3819155914;
+        public uint geometry_section;
+        public uint id;
+        public byte[] remaining_data;
+        public uint size;
+        public uint topology_section;
 
-    public PassthroughGP(BinaryReader instream, SectionHeader section)
-    {
-      this.id = section.id;
-      this.size = section.size;
-      this.geometry_section = instream.ReadUInt32();
-      this.topology_section = instream.ReadUInt32();
-      this.remaining_data = (byte[]) null;
-      if (section.offset + 12L + (long) section.size <= instream.BaseStream.Position)
-        return;
-      this.remaining_data = instream.ReadBytes((int) (section.offset + 12L + (long) section.size - instream.BaseStream.Position));
-    }
+        public PassthroughGP(uint sec_id, uint geom_id, uint face_id)
+        {
+            id = sec_id;
+            size = 8U;
+            geometry_section = geom_id;
+            topology_section = face_id;
+        }
 
-    public void StreamWrite(BinaryWriter outstream)
-    {
-      outstream.Write(PassthroughGP.passthroughGP_tag);
-      outstream.Write(this.id);
-      long position1 = outstream.BaseStream.Position;
-      outstream.Write(this.size);
-      this.StreamWriteData(outstream);
-      long position2 = outstream.BaseStream.Position;
-      outstream.BaseStream.Position = position1;
-      outstream.Write((uint) (position2 - (position1 + 4L)));
-      outstream.BaseStream.Position = position2;
-    }
+        public PassthroughGP(BinaryReader instream, SectionHeader section)
+        {
+            StreamReadData(instream, section);
+        }
 
-    public void StreamWriteData(BinaryWriter outstream)
-    {
-      outstream.Write(this.geometry_section);
-      outstream.Write(this.topology_section);
-    }
+        public PassthroughGP()
+        {
+        }
 
-    public override string ToString()
-    {
-      return "[PassthroughGP] ID: " + (object) this.id + " size: " + (object) this.size + " PassthroughGP_geometry_section: " + (object) this.geometry_section + " PassthroughGP_facelist_section: " + (object) this.topology_section + (this.remaining_data != null ? (object) (" REMAINING DATA! " + (object) this.remaining_data.Length + " bytes") : (object) "");
+        public sealed override void StreamReadData(BinaryReader instream, SectionHeader section)
+        {
+            id = section.id;
+            size = section.size;
+            geometry_section = instream.ReadUInt32();
+            topology_section = instream.ReadUInt32();
+            remaining_data = null;
+            if (section.offset + 12L + section.size <= instream.BaseStream.Position)
+                return;
+            remaining_data =
+                instream.ReadBytes((int) (section.offset + 12L + section.size - instream.BaseStream.Position));
+        }
+
+        public void StreamWrite(BinaryWriter outstream)
+        {
+            outstream.Write(passthroughGP_tag);
+            outstream.Write(id);
+            long position1 = outstream.BaseStream.Position;
+            outstream.Write(size);
+            StreamWriteData(outstream);
+            long position2 = outstream.BaseStream.Position;
+            outstream.BaseStream.Position = position1;
+            outstream.Write((uint) (position2 - (position1 + 4L)));
+            outstream.BaseStream.Position = position2;
+        }
+
+        public void StreamWriteData(BinaryWriter outstream)
+        {
+            outstream.Write(geometry_section);
+            outstream.Write(topology_section);
+        }
+
+        public override string ToString()
+        {
+            return "[PassthroughGP] ID: " + id + " size: " + size + " PassthroughGP_geometry_section: " +
+                   geometry_section + " PassthroughGP_facelist_section: " + topology_section + (remaining_data != null
+                       ? " REMAINING DATA! " + remaining_data.Length + " bytes"
+                       : (object) "");
+        }
     }
-  }
 }

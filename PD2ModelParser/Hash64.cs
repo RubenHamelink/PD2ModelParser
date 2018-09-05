@@ -11,7 +11,7 @@ namespace PD2ModelParser
 {
   internal class Hash64
   {
-    [DllImport("hash64.dll", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport("lib/hash64.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern ulong Hash(byte[] k, ulong length, ulong level);
 
     public static ulong HashString(string input, ulong level = 0)

@@ -9,7 +9,7 @@ using System.IO;
 
 namespace PD2ModelParser.Sections
 {
-  internal class Material_Group
+  internal class MaterialGroup : Section
   {
     private static uint material_group_tag = 690449181;
     public List<uint> items = new List<uint>();
@@ -18,7 +18,11 @@ namespace PD2ModelParser.Sections
     public uint count;
     public byte[] remaining_data;
 
-    public Material_Group(uint sec_id, uint mat_id)
+        public MaterialGroup()
+        {
+        }
+
+        public MaterialGroup(uint sec_id, uint mat_id)
     {
       this.id = sec_id;
       this.size = 0U;
@@ -26,21 +30,27 @@ namespace PD2ModelParser.Sections
       this.items.Add(mat_id);
     }
 
-    public Material_Group(BinaryReader instream, SectionHeader section)
+
+    public MaterialGroup(BinaryReader instream, SectionHeader section)
     {
-      this.id = section.id;
-      this.size = section.size;
-      this.count = instream.ReadUInt32();
-      for (int index = 0; (long) index < (long) this.count; ++index)
-        this.items.Add(instream.ReadUInt32());
-      if (section.offset + 12L + (long) section.size <= instream.BaseStream.Position)
-        return;
-      instream.ReadBytes((int) (section.offset + 12L + (long) section.size - instream.BaseStream.Position));
+        StreamReadData(instream, section);
     }
 
-    public void StreamWrite(BinaryWriter outstream)
+      public sealed override void StreamReadData(BinaryReader instream, SectionHeader section)
+      {
+          this.id = section.id;
+          this.size = section.size;
+          this.count = instream.ReadUInt32();
+          for (int index = 0; (long)index < (long)this.count; ++index)
+              this.items.Add(instream.ReadUInt32());
+          if (section.offset + 12L + (long)section.size <= instream.BaseStream.Position)
+              return;
+          instream.ReadBytes((int)(section.offset + 12L + (long)section.size - instream.BaseStream.Position));
+        }
+
+      public void StreamWrite(BinaryWriter outstream)
     {
-      outstream.Write(Material_Group.material_group_tag);
+      outstream.Write(MaterialGroup.material_group_tag);
       outstream.Write(this.id);
       long position1 = outstream.BaseStream.Position;
       outstream.Write(this.size);
